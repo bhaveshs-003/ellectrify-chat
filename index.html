@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ellectrify Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ Arctic Frost · design tokens ============ */
+  :root {
+    --accent:        #3f6cb0;   /* steel blue — primary action */
+    --accent-600:    #355e9c;
+    --accent-050:    #eef3fb;   /* tint surface */
+    --accent-100:    #dde8f7;
+
+    --ink:    #1b2638;          /* primary text */
+    --ink-2:  #586273;          /* secondary text */
+    --ink-3:  #8b94a4;          /* muted / placeholder */
+
+    --bg:      #ffffff;
+    --surface: #f7f9fc;         /* app backdrop, inputs */
+    --ice:     #eef3fb;         /* bot bubble */
+    --line:    #e8edf4;         /* hairline */
+    --line-2:  #dce3ee;
+
+    --header:   #1f3354;        /* deep steel navy */
+    --header-2: #294670;
+    --ok:       #22b07d;
+
+    --r-lg: 16px;
+    --r-md: 12px;
+    --r-sm: 9px;
+
+    --shadow-sm: 0 1px 2px rgba(16,33,60,.06);
+    --shadow-md: 0 4px 14px -6px rgba(16,33,60,.18);
+    --shadow-lg: 0 18px 44px -14px rgba(16,33,60,.30), 0 6px 16px -10px rgba(16,33,60,.16);
+
+    --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0; min-height: 100%;
+    font-family: var(--font);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background:
+      radial-gradient(900px 480px at 85% -8%, #e9f0fa 0%, transparent 60%),
+      radial-gradient(720px 420px at -8% 108%, #eef2f8 0%, transparent 55%),
+      var(--surface);
+  }
+
+  /* ============ storefront backdrop ============ */
+  .site { max-width: 940px; margin: 0 auto; padding: 76px 28px 140px; }
+  .site .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 20px;
+  }
+  .site .eyebrow::before {
+    content: ""; width: 18px; height: 1.5px; background: var(--accent); opacity: .5;
+  }
+  .site h1 {
+    font-size: 52px; line-height: 1.05; letter-spacing: -.025em;
+    font-weight: 700; margin: 0 0 18px; color: var(--ink);
+  }
+  .site h1 span { color: var(--accent); }
+  .site p.lede {
+    font-size: 18px; line-height: 1.6; color: var(--ink-2);
+    max-width: 540px; margin: 0 0 30px; font-weight: 400;
+  }
+  .pill-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 999px; padding: 9px 16px;
+    font-size: 13.5px; font-weight: 500; color: var(--ink-2);
+    box-shadow: var(--shadow-sm);
+  }
+  .pill svg { width: 15px; height: 15px; color: var(--accent); }
+
+  /* demo explainer */
+  .demo {
+    margin-top: 48px; max-width: 640px;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+    padding: 24px 26px;
+  }
+  .demo .kicker {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-050);
+    padding: 5px 10px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .demo .kicker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .demo h2 { font-size: 19px; font-weight: 600; letter-spacing: -.01em; margin: 0 0 8px; color: var(--ink); }
+  .demo p { font-size: 14.5px; line-height: 1.6; color: var(--ink-2); margin: 0 0 18px; }
+  .demo p .hl { color: var(--ink); font-weight: 600; }
+  .demo ol { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .demo li { counter-increment: step; display: flex; gap: 12px; align-items: flex-start; }
+  .demo li::before {
+    content: counter(step); flex: none;
+    width: 24px; height: 24px; border-radius: 7px;
+    background: var(--accent-050); color: var(--accent);
+    font-size: 12.5px; font-weight: 700;
+    display: grid; place-items: center; margin-top: 1px;
+  }
+  .demo li .txt { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+  .demo li .txt b { color: var(--ink); font-weight: 600; }
+  .demo .note {
+    margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line);
+    font-size: 12.5px; line-height: 1.55; color: var(--ink-3);
+  }
+  .demo .arrow { display: inline-block; }
+
+  /* ============ launcher ============ */
+  .launcher {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 56px; height: 56px; border-radius: 50%;
+    border: none; cursor: pointer; background: var(--header);
+    color: #fff; display: grid; place-items: center;
+    box-shadow: var(--shadow-lg); z-index: 50;
+    transition: transform .2s cubic-bezier(.2,.8,.2,1), background .2s ease;
+  }
+  .launcher:hover { transform: translateY(-2px); background: var(--header-2); }
+  .launcher svg { width: 24px; height: 24px; }
+  .launcher .badge {
+    position: absolute; top: 0; right: 0;
+    width: 14px; height: 14px; background: var(--accent);
+    border: 2.5px solid var(--surface); border-radius: 50%;
+  }
+
+  /* ============ panel ============ */
+  .panel {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 384px; max-width: calc(100vw - 32px);
+    height: 624px; max-height: calc(100vh - 48px);
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-lg);
+    display: flex; flex-direction: column; overflow: hidden; z-index: 60;
+    transform: translateY(16px) scale(.985); opacity: 0; pointer-events: none;
+    transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .18s ease;
+  }
+  .panel.open { transform: none; opacity: 1; pointer-events: auto; }
+
+  /* ============ header ============ */
+  .head { background: var(--header); color: #fff; padding: 15px 16px 14px; }
+  .head-top { display: flex; align-items: center; gap: 11px; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 10px; flex: none;
+    background: linear-gradient(150deg, #5b86c4, var(--accent));
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 16px; letter-spacing: .02em;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
+  }
+  .head .title { flex: 1; min-width: 0; }
+  .head .title b { font-size: 15px; font-weight: 600; letter-spacing: -.01em; display: block; }
+  .head .title .status {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #aebbd2; margin-top: 2px; font-weight: 400;
+  }
+  .head .title .status .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--ok);
+    box-shadow: 0 0 0 3px rgba(34,176,125,.22);
+  }
+  .icon-btn {
+    background: transparent; border: none; color: #aebbd2;
+    width: 30px; height: 30px; border-radius: 8px; cursor: pointer;
+    display: grid; place-items: center; transition: background .15s ease, color .15s ease;
+  }
+  .icon-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .icon-btn svg { width: 17px; height: 17px; }
+
+  .head-controls { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+
+  .toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; font-weight: 500; color: #c4cfe2; cursor: pointer; user-select: none;
+  }
+  .switch {
+    width: 34px; height: 19px; border-radius: 999px; flex: none;
+    background: rgba(255,255,255,.2); position: relative; transition: background .2s ease;
+  }
+  .switch::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 15px; height: 15px; border-radius: 50%; background: #fff;
+    transition: transform .2s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 1px 2px rgba(0,0,0,.25);
+  }
+  .toggle.on .switch { background: #5b86c4; }
+  .toggle.on .switch::after { transform: translateX(15px); }
+
+  .lang {
+    margin-left: auto; position: relative;
+    display: inline-flex; align-items: center;
+  }
+  .lang select {
+    appearance: none; -webkit-appearance: none;
+    background: rgba(255,255,255,.08); color: #fff;
+    border: 1px solid rgba(255,255,255,.16); border-radius: 8px;
+    padding: 6px 26px 6px 10px; font-family: var(--font);
+    font-size: 12.5px; font-weight: 500; cursor: pointer; line-height: 1;
+  }
+  .lang select:focus { outline: none; border-color: rgba(255,255,255,.4); }
+  .lang select option { color: #1b2638; }
+  .lang::after {
+    content: ""; position: absolute; right: 9px; top: 50%; pointer-events: none;
+    width: 7px; height: 7px; border-right: 1.6px solid #c4cfe2; border-bottom: 1.6px solid #c4cfe2;
+    transform: translateY(-65%) rotate(45deg);
+  }
+
+  .mode-banner {
+    display: none; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); padding: 8px 18px;
+    background: var(--accent-050); border-bottom: 1px solid var(--line);
+  }
+  .mode-banner.show { display: flex; }
+  .mode-banner .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* ============ messages ============ */
+  .messages {
+    flex: 1; overflow-y: auto; padding: 18px 16px 6px;
+    display: flex; flex-direction: column; gap: 9px;
+    background: var(--bg);
+  }
+  .messages::-webkit-scrollbar { width: 7px; }
+  .messages::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 8px; }
+  .messages::-webkit-scrollbar-thumb:hover { background: #c6cfdc; }
+
+  .row { display: flex; }
+  .row.bot { justify-content: flex-start; }
+  .row.user { justify-content: flex-end; }
+
+  .bubble {
+    max-width: 82%; padding: 10px 13px;
+    font-size: 14px; line-height: 1.5; letter-spacing: -.005em;
+    animation: msgIn .22s ease both;
+  }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+  .row.bot .bubble {
+    background: var(--ice); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 14px 14px 14px 4px;
+  }
+  .row.user .bubble {
+    background: var(--accent); color: #fff;
+    border-radius: 14px 14px 4px 14px;
+  }
+
+  /* product card */
+  .card {
+    width: 86%; background: var(--bg);
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+    animation: msgIn .24s ease both;
+  }
+  .card-main { display: flex; gap: 12px; padding: 13px 13px 11px; }
+  .card .thumb {
+    width: 50px; height: 50px; flex: none; border-radius: 10px;
+    background: var(--accent-050); color: var(--accent);
+    display: grid; place-items: center;
+  }
+  .card .thumb svg { width: 24px; height: 24px; }
+  .card .info { min-width: 0; }
+  .card .tag {
+    font-size: 10px; font-weight: 600; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 3px;
+  }
+  .card .name { font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .card .benefit { font-size: 12.5px; line-height: 1.45; color: var(--ink-2); margin-top: 3px; }
+  .card-foot {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 13px; border-top: 1px solid var(--line); background: #fcfdfe;
+  }
+  .card .price { font-size: 16px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+  .card .price s { font-size: 12.5px; color: var(--ink-3); font-weight: 500; margin-left: 5px; }
+  .add {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent); color: #fff; border: none;
+    padding: 8px 14px; border-radius: var(--r-sm);
+    font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background .15s ease, transform .12s ease;
+  }
+  .add:hover { background: var(--accent-600); transform: translateY(-1px); }
+  .add svg { width: 14px; height: 14px; }
+  .add.added { background: var(--surface); color: var(--ink-2); cursor: default; }
+  .add.added:hover { transform: none; }
+
+  /* typing */
+  .typing { display: inline-flex; gap: 4px; align-items: center; padding: 12px 13px; }
+  .typing span {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3);
+    animation: blink 1.3s infinite both;
+  }
+  .typing span:nth-child(2) { animation-delay: .18s; }
+  .typing span:nth-child(3) { animation-delay: .36s; }
+  @keyframes blink { 0%,70%,100% { opacity: .25; transform: translateY(0); } 35% { opacity: 1; transform: translateY(-2px); } }
+
+  /* ============ quick replies ============ */
+  .quick { display: flex; flex-wrap: wrap; gap: 7px; padding: 5px 16px 14px; }
+  .quick button {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--bg); border: 1px solid var(--line-2); color: var(--ink);
+    padding: 8px 13px; border-radius: 999px;
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all .15s ease; animation: msgIn .2s ease both;
+  }
+  .quick button svg { width: 15px; height: 15px; color: var(--accent); transition: color .15s ease; }
+  .quick button:hover {
+    border-color: var(--accent); background: var(--accent-050); color: var(--accent-600);
+  }
+  .quick button.ghost { color: var(--ink-3); }
+  .quick button.ghost svg { color: var(--ink-3); }
+  .quick button.ghost:hover { border-color: var(--line-2); background: var(--surface); color: var(--ink-2); }
+
+  /* ============ composer + footer ============ */
+  .composer { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
+  .composer input {
+    flex: 1; border: 1px solid var(--line-2); background: var(--surface);
+    border-radius: 10px; padding: 11px 13px; font-family: var(--font);
+    font-size: 14px; color: var(--ink); outline: none; transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .composer input::placeholder { color: var(--ink-3); }
+  .composer input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-050); background: var(--bg); }
+  .send {
+    background: var(--accent); color: #fff; border: none; flex: none;
+    width: 40px; height: 40px; border-radius: 10px; cursor: pointer;
+    display: grid; place-items: center; transition: background .15s ease;
+  }
+  .send:hover { background: var(--accent-600); }
+  .send svg { width: 17px; height: 17px; }
+
+  .footer {
+    text-align: center; font-size: 11px; color: var(--ink-3);
+    padding: 9px 12px 11px; border-top: 1px solid var(--line); background: var(--surface);
+  }
+  .footer b { color: var(--ink-2); font-weight: 600; }
+</style>
+</head>
+<body>
+
+  <main class="site">
+    <p class="eyebrow">Grounding &amp; Earthing</p>
+    <h1>Reconnect with the earth,<br><span>night after night.</span></h1>
+    <p class="lede">Silver-woven sheets, grounding mats, and wearable connectors engineered to bring the calm of barefoot earth contact indoors.</p>
+    <div class="pill-row">
+      <div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Free shipping over $99</div>
+      <div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 60-night trial</div>
+      <div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Lab-tested conductivity</div>
+    </div>
+
+    <section class="demo">
+      <span class="kicker"><span class="dot"></span> Interactive demo</span>
+      <h2>Meet the Ellectrify Concierge</h2>
+      <p>This page is a working <span class="hl">proof of concept</span> for an on-site chat assistant that guides shoppers to the right grounding product and answers common support questions. The conversation runs on hardcoded logic in the browser — there's no live AI or backend.</p>
+      <ol>
+        <li><span class="txt"><b>Open the chat</b> using the bubble in the bottom-right corner (it also opens automatically).</span></li>
+        <li><span class="txt"><b>Pick your main goal</b> — Better sleep, Less stress, Aches &amp; recovery, or Travel — and the concierge recommends a product you can add to cart.</span></li>
+        <li><span class="txt"><b>Tap a follow-up</b> like “Which size?”, “Is it safe?”, or “Track my order”, or type your own message.</span></li>
+        <li><span class="txt">Flip <b>Support mode</b> in the header to switch the replies to order status, returns, and troubleshooting.</span></li>
+        <li><span class="txt">Use the <b>language menu</b> (English / Español / Deutsch) to see the greeting adapt.</span></li>
+      </ol>
+      <p class="note">Wellness guidance only — not medical advice. Pricing, products, and responses shown here are illustrative sample data.</p>
+    </section>
+  </main>
+
+  <button class="launcher" id="launcher" aria-label="Open chat">
+    <span class="badge"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  </button>
+
+  <section class="panel" id="panel" aria-live="polite">
+    <header class="head">
+      <div class="head-top">
+        <div class="avatar">E</div>
+        <div class="title">
+          <b>Ellectrify Concierge</b>
+          <span class="status"><span class="dot"></span> Online · replies instantly</span>
+        </div>
+        <button class="icon-btn" id="closeBtn" aria-label="Close chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="head-controls">
+        <label class="toggle" id="supportToggle">
+          <span class="switch"></span><span>Support mode</span>
+        </label>
+        <div class="lang">
+          <select id="langSelect" aria-label="Language">
+            <option value="EN">English</option>
+            <option value="ES">Español</option>
+            <option value="DE">Deutsch</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <div class="mode-banner" id="modeBanner"><span class="dot"></span><span>Support mode</span></div>
+
+    <div class="messages" id="messages"></div>
+    <div class="quick" id="quick"></div>
+
+    <div class="composer">
+      <input id="composerInput" type="text" placeholder="Message…" />
+      <button class="send" id="sendBtn" aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+
+    <div class="footer">Wellness guidance only — <b>not medical advice.</b></div>
+  </section>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- icons (Feather-style line icons) ----------
+  function ic(path) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
+  }
+  const icons = {
+    sleep:    ic('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'),
+    stress:   ic('<path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>'),
+    recovery: ic('<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'),
+    travel:   ic('<polygon points="3 11 22 2 13 21 11 13 3 11"/>'),
+    size:     ic('<path d="M21 6H3M21 12H3M21 18H3"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/>'),
+    safe:     ic('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'),
+    track:    ic('<rect x="1" y="6" width="15" height="12" rx="1.5"/><path d="M16 9h4l3 3v4a2 2 0 0 1-2 2h-1"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>'),
+    returns:  ic('<path d="M3 7v6h6"/><path d="M3.5 13a9 9 0 1 0 2.3-9.2L3 7"/>'),
+    usage:    ic('<path d="M14.7 6.3a4 4 0 0 0-5.6 5.6L3 18v3h3l6.1-6.1a4 4 0 0 0 5.6-5.6l-2.5 2.5-2.5-2.5 2.5-2.5z"/>'),
+    cart:     ic('<circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2l2.4 12.4a1.5 1.5 0 0 0 1.5 1.2h8.7a1.5 1.5 0 0 0 1.5-1.2L21 7H6"/>'),
+    restart:  ic('<path d="M3 2v6h6"/><path d="M3.5 8a9 9 0 1 1-1.3 5"/>'),
+    check:    ic('<path d="M20 6 9 17l-5-5"/>')
+  };
+
+  // ---------- copy ----------
+  const greetings = {
+    EN: "Hi, I'm your Ellectrify Concierge. I can help you find the right grounding product for how you want to feel. What's your main goal today?",
+    ES: "Hola, soy tu Concierge de Ellectrify. Puedo ayudarte a encontrar el producto de conexión a tierra ideal para cómo quieres sentirte. ¿Cuál es tu objetivo principal hoy?",
+    DE: "Hallo, ich bin dein Ellectrify Concierge. Ich helfe dir, das richtige Erdungsprodukt für dein Wohlbefinden zu finden. Was ist heute dein Hauptziel?"
+  };
+  const supportGreeting = {
+    EN: "You're in Support mode. How can I help with your order or product?",
+    ES: "Estás en modo Soporte. ¿Cómo puedo ayudarte con tu pedido o producto?",
+    DE: "Du bist im Support-Modus. Wie kann ich dir bei Bestellung oder Produkt helfen?"
+  };
+
+  const products = {
+    sleep: {
+      name: "Aurora Grounding Fitted Sheet", tag: "Best for sleep", icon: "sleep",
+      price: "$189", was: "$229",
+      benefit: "Silver-woven cotton that grounds you all night for deeper, calmer rest.",
+      line: "For better sleep, most people start with our fitted sheet — you're grounded the whole time you rest, with no extra steps."
+    },
+    stress: {
+      name: "Calm Grounding Mat", tag: "Best for stress", icon: "stress",
+      price: "$129", was: null,
+      benefit: "A desk or floor mat for daytime grounding during work or meditation.",
+      line: "For everyday stress, the grounding mat is the easy win — use it under your feet at your desk or during a few quiet minutes."
+    },
+    recovery: {
+      name: "Recovery Grounding Mat XL", tag: "Aches & recovery", icon: "recovery",
+      price: "$159", was: null,
+      benefit: "Extra-large conductive surface for post-workout, full-body recovery.",
+      line: "For aches and recovery, the XL mat gives you a large conductive surface to lie or stretch out on after activity."
+    },
+    travel: {
+      name: "Voyage Wearable Connector", tag: "Best for travel", icon: "travel",
+      price: "$79", was: null,
+      benefit: "A packable wrist or ankle strap so you can ground anywhere you go.",
+      line: "For travel, the wearable connector is the move — it folds into your bag so you can stay grounded in any hotel or office."
+    }
+  };
+
+  const goalLabels = {
+    EN: { sleep: "Better sleep", stress: "Less stress", recovery: "Aches & recovery", travel: "Travel" },
+    ES: { sleep: "Dormir mejor", stress: "Menos estrés", recovery: "Dolores y recuperación", travel: "Viajes" },
+    DE: { sleep: "Besser schlafen", stress: "Weniger Stress", recovery: "Schmerzen & Erholung", travel: "Reisen" }
+  };
+
+  const followups = {
+    size: "Our sheets come in Twin, Full, Queen, King and Cal-King — all use the same silver-woven conductive thread. Mats are one-size (also available in XL). Tell me your mattress and I'll point you to the right fit.",
+    safe: "Grounding products are passive — they simply connect you to the earth's surface charge through your home's grounding port (or an included ground rod). No electricity is sent into you. As always, this is wellness guidance, not medical advice.",
+    track: "Of course. Drop in your order number (it looks like ELL-XXXXXX) and I'll pull up live tracking for you.",
+    cart: "Added to your cart. Want me to apply your 60-night trial and free-shipping perk at checkout?"
+  };
+  const supportAnswers = {
+    order: "I can check that right away — what's your order number? It starts with ELL- and is in your confirmation email.",
+    returns: "Every Ellectrify product has a 60-night trial. If it's not for you, I'll generate a prepaid return label and refund you in full, with no restocking fees. Want me to start one?",
+    usage: "Most setup questions come down to the ground connection: plug the cord into the round grounding port of any outlet (or use the included ground rod outside), then connect it to your sheet or mat. Seeing no conductivity reading? Tell me and I'll troubleshoot step by step."
+  };
+
+  // ---------- state + elements ----------
+  let lang = "EN", supportMode = false;
+  const $ = function (id) { return document.getElementById(id); };
+  const panel = $("panel"), launcher = $("launcher"), closeBtn = $("closeBtn");
+  const messages = $("messages"), quick = $("quick");
+  const supportToggle = $("supportToggle"), modeBanner = $("modeBanner");
+  const langSelect = $("langSelect"), input = $("composerInput"), sendBtn = $("sendBtn");
+
+  // ---------- helpers ----------
+  function scrollDown() {
+    requestAnimationFrame(function () { messages.scrollTop = messages.scrollHeight; });
+  }
+
+  function addUser(text) {
+    const row = document.createElement("div");
+    row.className = "row user";
+    row.innerHTML = '<div class="bubble"></div>';
+    row.querySelector(".bubble").textContent = text;
+    messages.appendChild(row); scrollDown();
+  }
+  function addBot(text) {
+    const row = document.createElement("div");
+    row.className = "row bot";
+    row.innerHTML = '<div class="bubble"></div>';
+    row.querySelector(".bubble").textContent = text;
+    messages.appendChild(row); scrollDown();
+  }
+  function botTyping(cb, delay) {
+    const row = document.createElement("div");
+    row.className = "row bot";
+    row.innerHTML = '<div class="bubble" style="padding:0"><div class="typing"><span></span><span></span><span></span></div></div>';
+    messages.appendChild(row); scrollDown();
+    setTimeout(function () { row.remove(); cb(); }, delay || 720);
+  }
+  function clearQuick() { quick.innerHTML = ""; }
+  function addQuick(label, handler, opts) {
+    opts = opts || {};
+    const btn = document.createElement("button");
+    if (opts.ghost) btn.className = "ghost";
+    btn.innerHTML = (opts.icon ? icons[opts.icon] : "") + "<span></span>";
+    btn.querySelector("span").textContent = label;
+    btn.addEventListener("click", handler);
+    quick.appendChild(btn);
+    scrollDown();
+  }
+
+  function addProductCard(p) {
+    const row = document.createElement("div");
+    row.className = "row bot";
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<div class="card-main">' +
+        '<div class="thumb">' + icons[p.icon] + '</div>' +
+        '<div class="info">' +
+          '<div class="tag">' + p.tag + '</div>' +
+          '<div class="name">' + p.name + '</div>' +
+          '<div class="benefit">' + p.benefit + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-foot">' +
+        '<span class="price">' + p.price + (p.was ? '<s>' + p.was + '</s>' : '') + '</span>' +
+        '<button class="add">' + icons.cart + '<span>Add to cart</span></button>' +
+      '</div>';
+    row.appendChild(card);
+    messages.appendChild(row); scrollDown();
+
+    card.querySelector(".add").addEventListener("click", function () {
+      this.classList.add("added");
+      this.innerHTML = icons.check + '<span>Added</span>';
+      botTyping(function () { addBot(followups.cart); });
+    });
+  }
+
+  // ---------- sales flow ----------
+  function startSalesFlow() { clearQuick(); addBot(greetings[lang]); showGoals(); }
+  function showGoals() {
+    clearQuick();
+    const L = goalLabels[lang];
+    addQuick(L.sleep,    function () { chooseGoal("sleep", L.sleep); },       { icon: "sleep" });
+    addQuick(L.stress,   function () { chooseGoal("stress", L.stress); },     { icon: "stress" });
+    addQuick(L.recovery, function () { chooseGoal("recovery", L.recovery); }, { icon: "recovery" });
+    addQuick(L.travel,   function () { chooseGoal("travel", L.travel); },     { icon: "travel" });
+  }
+  function chooseGoal(key, label) {
+    addUser(label); clearQuick();
+    const p = products[key];
+    botTyping(function () {
+      addBot(p.line);
+      botTyping(function () { addProductCard(p); showSalesFollowups(); }, 560);
+    });
+  }
+  function salesFollowup(label, key) {
+    addUser(label); clearQuick();
+    botTyping(function () { addBot(followups[key]); showSalesFollowups(); });
+  }
+  function showSalesFollowups() {
+    clearQuick();
+    addQuick("Which size?",    function () { salesFollowup("Which size?", "size"); },        { icon: "size" });
+    addQuick("Is it safe?",    function () { salesFollowup("Is it safe?", "safe"); },        { icon: "safe" });
+    addQuick("Track my order", function () { salesFollowup("Track my order", "track"); },    { icon: "track" });
+    addQuick("Start over",     function () { addUser("Start over"); botTyping(startSalesFlow); }, { icon: "restart", ghost: true });
+  }
+
+  // ---------- support flow ----------
+  function startSupportFlow() { clearQuick(); addBot(supportGreeting[lang]); showSupport(); }
+  function supportReply(label, key) {
+    addUser(label); clearQuick();
+    botTyping(function () { addBot(supportAnswers[key]); showSupport(); });
+  }
+  function showSupport() {
+    clearQuick();
+    addQuick("Order status",  function () { supportReply("Order status", "order"); },   { icon: "track" });
+    addQuick("Returns",       function () { supportReply("Returns", "returns"); },       { icon: "returns" });
+    addQuick("Troubleshooting", function () { supportReply("Troubleshooting", "usage"); }, { icon: "usage" });
+  }
+
+  function resetConversation() {
+    messages.innerHTML = ""; clearQuick();
+    botTyping(supportMode ? startSupportFlow : startSalesFlow, 420);
+  }
+
+  // ---------- free text (light keyword match, no API) ----------
+  function handleFreeText(text) {
+    addUser(text); input.value = "";
+    const t = text.toLowerCase();
+    botTyping(function () {
+      if (/sleep|rest|insomnia|dormir|schlaf/.test(t)) { addBot(products.sleep.line); addProductCard(products.sleep); showSalesFollowups(); }
+      else if (/stress|anxious|calm|relax|estr/.test(t)) { addBot(products.stress.line); addProductCard(products.stress); showSalesFollowups(); }
+      else if (/ache|pain|recover|sore|muscle|dolor/.test(t)) { addBot(products.recovery.line); addProductCard(products.recovery); showSalesFollowups(); }
+      else if (/travel|trip|hotel|viaj|reis/.test(t)) { addBot(products.travel.line); addProductCard(products.travel); showSalesFollowups(); }
+      else if (/size|fit|queen|king/.test(t)) { addBot(followups.size); }
+      else if (/safe|safety|danger|shock/.test(t)) { addBot(followups.safe); }
+      else if (/track|status/.test(t) || /ELL-/i.test(text)) { addBot(followups.track); }
+      else if (/return|refund/.test(t)) { addBot(supportAnswers.returns); }
+      else {
+        addBot("Happy to help. I can match grounding products to your goal — sleep, stress, recovery or travel. Pick one below and I'll recommend the right fit. (This is a hardcoded proof of concept.)");
+        if (supportMode) showSupport(); else showGoals();
+      }
+    });
+  }
+
+  // ---------- open/close + events ----------
+  function openPanel() {
+    panel.classList.add("open"); launcher.style.display = "none";
+    if (messages.children.length === 0) {
+      botTyping(function () { supportMode ? startSupportFlow() : startSalesFlow(); }, 480);
+    }
+    input.focus();
+  }
+  function closePanel() { panel.classList.remove("open"); launcher.style.display = "grid"; }
+
+  launcher.addEventListener("click", openPanel);
+  closeBtn.addEventListener("click", closePanel);
+
+  supportToggle.addEventListener("click", function () {
+    supportMode = !supportMode;
+    supportToggle.classList.toggle("on", supportMode);
+    modeBanner.classList.toggle("show", supportMode);
+    resetConversation();
+  });
+  langSelect.addEventListener("change", function () { lang = this.value; resetConversation(); });
+
+  sendBtn.addEventListener("click", function () { const v = input.value.trim(); if (v) handleFreeText(v); });
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { const v = input.value.trim(); if (v) handleFreeText(v); }
+  });
+
+  setTimeout(openPanel, 380);
+})();
+</script>
+</body>
+</html>
